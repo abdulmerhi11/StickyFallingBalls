@@ -19,22 +19,28 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
 {
+    // All variables defined
     private static final String TAG = "GameStarter"; // for Log.w(TAG, ...)
-
     private GameThread gameThread; // runs the main game loop
     private Activity mainActivity; // keep a reference to the main Activity
-
     private boolean isGameOver = true;
-
-    private int x;
-    private int y;
+    private double gravity = 10;
     private int screenWidth;
     private int screenHeight;
-
+    private int x;
+    private int y;
+    private int score;
+    private Ball myBall;
     private Paint myPaint;
     private Paint backgroundPaint;
+    Random rand = new Random();
+    private ArrayList<Ball> ballsDisplayed;
+
 
     public MainGameView(Context context, AttributeSet atts)
     {
@@ -44,9 +50,24 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
         getHolder().addCallback(this);
 
         myPaint = new Paint();
-        myPaint.setColor(Color.BLUE);
+        myPaint.setColor(randomColor());
         backgroundPaint = new Paint();
-        backgroundPaint.setColor(Color.CYAN);
+        backgroundPaint.setColor(Color.GRAY);
+    }
+
+    //select a random color to the ball
+    private int randomColor(){
+        Random rColor = new Random();
+        int colNum = rColor.nextInt(3);
+        if (colNum == 0){
+            return Color.YELLOW;
+        } else if(colNum == 1){
+            return Color.GREEN;
+        } else if(colNum == 2){
+            return Color.BLUE;
+        } else {
+            return Color.RED;
+        }
     }
 
     // called when the size changes (and first time, when view is created)
@@ -63,8 +84,8 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
 
     public void startNewGame()
     {
-        this.x = 25;
-        this.y = 25;
+        myBall.x = myBall.radius + rand.nextInt(screenWidth + 1 - myBall.radius);
+        myBall.y = -myBall.radius;
 
         if (isGameOver)
         {
@@ -74,6 +95,14 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+    public void drawBalls(Canvas canvas){
+        if (canvas !=null){
+            canvas.drawRect(0,0, canvas.getWidth(), canvas.getHeight(),backgroundPaint);
+            while (isGameOver == false){
+                canvas.drawCircle(myBall.x,(float)myBall.y,myBall.radius, myPaint);
+            }
+        }
+    }
 
     private void gameStep()
     {
@@ -180,7 +209,8 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
                     synchronized(surfaceHolder)
                     {
                         gameStep();         // update game state
-                        updateView(canvas); // draw using the canvas
+                        updateView(canvas); // dr
+                        // aw using the canvas
                     }
                     Thread.sleep(10); // if you want to slow down the action...
                 } catch (InterruptedException ex) {

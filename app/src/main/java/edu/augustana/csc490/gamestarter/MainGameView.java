@@ -31,11 +31,11 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
 
     // All variables defined
     private boolean isGameOver = true;
-    private double gravity;
+    private double speed;
     private int screenWidth;
     private int screenHeight;
 
-    private int score;
+    private int score = 0;
     private Ball myBall;
 
     Random rand = new Random();
@@ -49,7 +49,6 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
 
     // paint variables
     private Paint textPaint;
-    private Paint myBallPaint;
     private Paint backgroundPaint;
 
 
@@ -66,11 +65,11 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
 //        soundMap.put(Main_Game_ID, soundPool.load(context, R.raw.blocker_hit, 1));
 //        soundMap.put(Ball_Explode_ID, soundPool.load(context, R.raw.cannon_fire, 1));
 
-        myBallPaint = new Paint();
-        myBallPaint.setColor(randomColor());
+
         textPaint = new Paint();
         backgroundPaint = new Paint();
         backgroundPaint.setColor(Color.GRAY);
+        ballsDisplayed= new ArrayList<Ball>();
 
     }
 
@@ -108,11 +107,13 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
     public void startNewGame()
     {
         myBall = new Ball();
-        myBall.radius = screenHeight / 20;
 
         myBall.x = myBall.radius + rand.nextInt(screenWidth - 2*myBall.radius);
-        myBall.y = 2*myBall.radius;
-        //myBall.y = -myBall.radius;
+        myBall.y = - myBall.radius;
+        ballsDisplayed.clear();
+
+        speed = 10;
+
 
         if (isGameOver)
         {
@@ -125,19 +126,38 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
 
 
     public void drawBalls(Canvas canvas){
+        myBall.paint = new Paint();
+        myBall.paint.setColor(randomColor());
         Log.w(TAG, "drawBalls() called");
         if (canvas !=null){
             canvas.drawRect(0,0, canvas.getWidth(), canvas.getHeight(),backgroundPaint);
 
-            canvas.drawCircle(myBall.x,(float)myBall.y,myBall.radius, myBallPaint);
+            canvas.drawCircle((float)myBall.x,(float)myBall.y,myBall.radius, myBall.paint);
 
+           for (int i =0; i < ballsDisplayed.size(); i++){
+               Ball b = ballsDisplayed.get(i);
+               canvas.drawCircle((float)b.x,(float)b.y,b.radius, b.paint);
+            }
         }
     }
 
     private void gameStep()
     {
-        myBall.y++;
-        myBall.x++;
+        if (myBall.hitsFloor(screenHeight)){
+            myBall.isFalling = false;
+            ballsDisplayed.add(myBall);
+            Log.w(TAG, "array size = "+ballsDisplayed.size());
+            myBall = new Ball();
+            myBall.x = myBall.radius + rand.nextInt(screenWidth - 2 * myBall.radius);
+            myBall.y = -myBall.radius;
+            speed = 2*(1+ rand.nextInt(5));
+        }
+
+        if (myBall.isFalling){
+            myBall.y = myBall.y + speed;
+        }
+
+
 
     }
 
@@ -187,22 +207,24 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-        @Override
+    @Override
     public boolean onTouchEvent(MotionEvent e)
     {
         int action = e.getAction();
+        int touchX = 1000;
+        int touchY = 1000;
 
         if (action == MotionEvent.ACTION_DOWN)
         {
-            int touchX = (int) e.getX();
-            int touchY = (int) e.getY();
+            touchX = (int) e.getX();
+            touchY = (int) e.getY();
         }
-        //TODO: make a contain method in ball
-       // if (myBall.isFalling && (this.touchX < myBall.touchX + ) && (this.touchY == myBall.touchY)){
-            //explodeMyBall(e);
-        //}
+        if (myBall.isFalling && myBall.contains(touchX, touchY)){
+           score = score + myBall.colorPoints();
 
-        return true;
+        }
+
+        return false;
     }
 
     // Thread subclass to run the main game loop

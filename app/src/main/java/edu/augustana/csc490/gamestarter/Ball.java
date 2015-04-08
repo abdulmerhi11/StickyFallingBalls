@@ -5,18 +5,19 @@ package edu.augustana.csc490.gamestarter;
  */
 
 import android.graphics.Color;
+import android.graphics.Paint;
 
 import java.math.MathContext;
 
 public class Ball {
     boolean isFalling = true;
-    int points;
-    int x;
-    int radius;
+    double x;
+    int radius = 40;
     double y;
-    Color color;
+    Paint paint;
+    boolean isExploded;
 
-
+    //constructor
 
     //get the y-value of the very bottom point of a ball
     public double getBottomY () {
@@ -24,16 +25,16 @@ public class Ball {
     }
 
     //sets points to each of the four different colors
-    public void colorPoints(){
-        if (color.equals(Color.YELLOW)){
-            points = 10;
-        } else if (color.equals(Color.GREEN)){
-            points = 20;
+    public int colorPoints(){
+        if (paint.equals(Color.YELLOW)){
+            return 10;
+        } else if (paint.equals(Color.GREEN)){
+           return 20;
 
-        } else if (color.equals(Color.BLUE)){
-            points = 30;
+        } else if (paint.equals(Color.BLUE)){
+            return 30;
         } else {
-            points = 40;
+            return 40;
         }
     }
 
@@ -48,11 +49,11 @@ public class Ball {
     }
 
     //checks if it intersects with the floor
-    public boolean intersectsWith (double canWidth){
-        if(this.isFalling == true && getBottomY() == canWidth){
-            return false;
-        } else {
+    public boolean hitsFloor(double canHeight){
+        if(this.isFalling == true && getBottomY() >= (canHeight) ){
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -61,6 +62,18 @@ public class Ball {
             y = y + gravity/100;
         }
     }
+
+
+
+
+   public boolean contains(int touchX,int touchY){
+       double distance = Math.sqrt((touchX - x)*(touchX-x) + (touchY - y)*(touchY - y));
+       if (distance < (double) radius){
+           return true;
+       } else {
+           return false;
+       }
+   }
 
 
 

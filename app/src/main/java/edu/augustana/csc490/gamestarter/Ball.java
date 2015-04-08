@@ -12,9 +12,10 @@ public class Ball {
     boolean isFalling = true;
     int points;
     int x;
-    int radius = 1;
+    int radius;
     double y;
     Color color;
+
 
 
     //get the y-value of the very bottom point of a ball

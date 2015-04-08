@@ -136,6 +136,7 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
 
     private void gameStep()
     {
+        myBall.y++;
 
     }
 

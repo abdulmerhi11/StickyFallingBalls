@@ -15,7 +15,7 @@ public class Ball {
     int radius = 40;
     double y;
     Paint paint;
-    boolean isExploded;
+    boolean isExploded = false;
 
     //constructor
 

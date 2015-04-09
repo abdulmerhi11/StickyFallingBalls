@@ -112,7 +112,7 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
         myBall.y = - myBall.radius;
         ballsDisplayed.clear();
 
-        speed = 10;
+        speed = 20;
 
 
         if (isGameOver)
@@ -123,6 +123,15 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+
+
+    public boolean checkGameOver(){
+        if(!myBall.isFalling && myBall.getBottomY() < 2*myBall.radius){
+            return true;
+        } else{
+            return false;
+        }
+    }
 
 
     public void drawBalls(Canvas canvas){
@@ -143,14 +152,21 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
 
     private void gameStep()
     {
-        if (myBall.hitsFloor(screenHeight)){
+        if (myBall.intersectsWith(ballsDisplayed) || myBall.hitsFloor(screenHeight)){
             myBall.isFalling = false;
-            ballsDisplayed.add(myBall);
-            Log.w(TAG, "array size = "+ballsDisplayed.size());
-            myBall = new Ball();
-            myBall.x = myBall.radius + rand.nextInt(screenWidth - 2 * myBall.radius);
-            myBall.y = -myBall.radius;
-            speed = 2*(1+ rand.nextInt(5));
+            if (checkGameOver()){
+                startNewGame();
+            } else {
+                ballsDisplayed.add(myBall);
+                Log.w(TAG, "array size = "+ballsDisplayed.size());
+                myBall = new Ball();
+               myBall.x = 50;
+               // myBall.x = myBall.radius + rand.nextInt(screenWidth - 2 * myBall.radius);
+                myBall.y = -myBall.radius;
+
+                speed = 2*(10 + rand.nextInt(20));
+            }
+
         }
 
         if (myBall.isFalling){

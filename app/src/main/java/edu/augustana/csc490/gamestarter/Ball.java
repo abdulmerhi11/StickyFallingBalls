@@ -6,8 +6,8 @@ package edu.augustana.csc490.gamestarter;
 
 import android.graphics.Color;
 import android.graphics.Paint;
-
 import java.math.MathContext;
+import java.util.ArrayList;
 
 public class Ball {
     boolean isFalling = true;
@@ -40,12 +40,16 @@ public class Ball {
 
 
     // checks if it intersects with another ball
-    public boolean intersectsWith (Ball other){
-        if (this.isFalling == true && Math.sqrt((other.x - this.x) * (other.x - this.x) + (other.y - this.y) * (other.y - this.y)) == (radius*2)){
-            return false;
-        } else {
-            return true;
+    public boolean intersectsWith (ArrayList<Ball> ballsDisplayed){
+        boolean check = false;
+        for (int i = 0; i < ballsDisplayed.size(); i++) {
+            if (Math.sqrt((ballsDisplayed.get(i).x - this.x) * (ballsDisplayed.get(i).x - this.x) + (ballsDisplayed.get(i).y - this.y) * (ballsDisplayed.get(i).y - this.y)) <= (radius*2)) {
+                check = true;
+                break;
+            }
         }
+            return check;
+
     }
 
     //checks if it intersects with the floor
@@ -57,11 +61,11 @@ public class Ball {
         }
     }
 
-    public void changeY (double gravity){
-        if (isFalling == true){
-            y = y + gravity/100;
-        }
-    }
+//    public void changeY (double gravity){
+//        if (isFalling == true){
+//            y = y + gravity/100;
+//        }
+//    }
 
 
 

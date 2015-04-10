@@ -7,5 +7,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_highest_score">HighestScore</string>
+    <string name= "results_format">Your Score: %1$d\nHighest Score: %1$d</string>
+    <string name = "reset_game">Play Again</string>
 
 </resources>

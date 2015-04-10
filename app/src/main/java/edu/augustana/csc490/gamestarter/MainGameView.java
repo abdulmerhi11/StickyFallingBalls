@@ -3,11 +3,16 @@
 package edu.augustana.csc490.gamestarter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.SoundPool;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseIntArray;
@@ -44,6 +49,7 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
 
     Random rand = new Random();
     private ArrayList<Ball> ballsDisplayed;
+    private ArrayList<Ball> ballsExploded;
 
     //Sounds
     private static final int Main_Game_ID = 0;
@@ -75,6 +81,7 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
         backgroundPaint = new Paint();
         backgroundPaint.setColor(Color.DKGRAY);
         ballsDisplayed= new ArrayList<Ball>();
+        ballsExploded = new ArrayList<Ball>();
 
        // scoreView = (TextView) mainActivity.findViewById(R.id.scorebox);
 
@@ -146,6 +153,37 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+    private void showGameOverDialog (){
+        final DialogFragment gameResult = new DialogFragment() {
+
+           public Dialog onCreateDialog(Bundle bundle){
+               AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+               builder.setTitle("GAME OVER");
+
+               builder.setMessage("Your Score: " +score+ "\nHighest Score: " +highestScore+ "\nBalls Shot: ");
+               builder.setPositiveButton(R.string.reset_game, new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialog, int which) {
+                       dialogIsDisplayed = false;
+                       startNewGame();
+                   }
+               });
+
+               return builder.create();
+           }
+        };
+        mainActivity.runOnUiThread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        dialogIsDisplayed = true;
+                        gameResult.setCancelable(false);
+                        gameResult.show(mainActivity.getFragmentManager(), "results");
+                    }
+                }
+        );
+    }
+
 
     public void drawBalls(Canvas canvas){
 
@@ -189,13 +227,12 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
 
                 myBall.isFalling = false;
                 if (checkGameOver()){
-                    startNewGame();
+                    showGameOverDialog();
                 } else {
                     ballsDisplayed.add(myBall);
                     colorBallText = randomColor();
                     myBall = new Ball();
                     myBall.paint.setColor(colorBallText);
-                    textPaint.setColor(colorBallText);
                     myBall.x = myBall.radius + rand.nextInt(screenWidth - 2 * myBall.radius);
                     myBall.y = -myBall.radius;
 
@@ -219,15 +256,15 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
     public void explodeBall (int touchX, int touchY) {
         if (myBall.contains(touchX, touchY)) {
             score = score + myBall.colorPoints();
+            colorBallText = randomColor();
             scoreString = ""+ score;
             //scoreView.setText(scoreString);
             if (score >highestScore){
                 highestScore = score;
             }
+            textPaint.setColor(myBall.paint.getColor());
             myBall = new Ball();
-            colorBallText = randomColor();
             myBall.paint.setColor(colorBallText);
-            textPaint.setColor(colorBallText);
             myBall.x = myBall.radius + rand.nextInt(screenWidth - 2 * myBall.radius);
             myBall.y = -myBall.radius;
             myBall.isExploded = true;
@@ -253,6 +290,11 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void surfaceCreated(SurfaceHolder holder)
     {
+        if (!dialogIsDisplayed){
+            gameThread = new GameThread(holder);
+            gameThread.setRunning(true);
+            gameThread.start();
+        }
     }
 
     @Override

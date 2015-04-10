@@ -41,7 +41,8 @@ public final class R {
     }
     public static final class mipmap {
         public static final int bgpic=0x7f030000;
-        public static final int rainbg=0x7f030001;
+        public static final int colorpoints=0x7f030001;
+        public static final int rainbg=0x7f030002;
     }
     public static final class raw {
         public static final int blocker_hit=0x7f050000;

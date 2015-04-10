@@ -128,6 +128,7 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
         myBall.x = myBall.radius + rand.nextInt(screenWidth - 2*myBall.radius);
         myBall.y = - myBall.radius;
         ballsDisplayed.clear();
+        ballsExploded.clear();
 
         speed = 30;
 
@@ -144,7 +145,7 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
     }
 
 
-
+    // checks if the game reached an end
     public boolean checkGameOver(){
         if(!myBall.isFalling && myBall.getBottomY() < 2*myBall.radius){
             return true;
@@ -153,6 +154,7 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+    //displays a Game Over dialog with the results of the game
     private void showGameOverDialog (){
         final DialogFragment gameResult = new DialogFragment() {
 
@@ -160,11 +162,13 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                builder.setTitle("GAME OVER");
 
-               builder.setMessage("Your Score: " +score+ "\nHighest Score: " +highestScore+ "\nBalls Shot: ");
+               int ballsShot = ballsExploded.size();
+               builder.setMessage("Your Score: " +score+ "\nHighest Score: " +highestScore+ "\nBalls Shot: "+ballsShot);
                builder.setPositiveButton(R.string.reset_game, new DialogInterface.OnClickListener() {
                    @Override
                    public void onClick(DialogInterface dialog, int which) {
                        dialogIsDisplayed = false;
+                       isGameOver = true;
                        startNewGame();
                    }
                });
@@ -253,8 +257,10 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
 
     }
 
+    // checks if the ball is hit
     public void explodeBall (int touchX, int touchY) {
         if (myBall.contains(touchX, touchY)) {
+            ballsExploded.add(myBall);
             score = score + myBall.colorPoints();
             colorBallText = randomColor();
             scoreString = ""+ score;

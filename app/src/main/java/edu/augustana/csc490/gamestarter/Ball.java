@@ -14,7 +14,7 @@ public class Ball {
     double x;
     int radius = 40;
     double y;
-    Paint paint;
+    Paint paint = new Paint();
     boolean isExploded = false;
 
     //constructor
@@ -26,12 +26,13 @@ public class Ball {
 
     //sets points to each of the four different colors
     public int colorPoints(){
-        if (paint.equals(Color.YELLOW)){
+
+        if (paint.getColor() == Color.YELLOW){
             return 10;
-        } else if (paint.equals(Color.GREEN)){
+        } else if (paint.getColor() == Color.GREEN){
            return 20;
 
-        } else if (paint.equals(Color.BLUE)){
+        } else if (paint.getColor() == Color.BLUE){
             return 30;
         } else {
             return 40;

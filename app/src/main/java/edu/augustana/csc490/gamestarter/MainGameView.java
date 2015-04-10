@@ -14,6 +14,8 @@ import android.util.SparseIntArray;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -38,6 +40,7 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
     private int score = 0;
     private int highestScore;
     private Ball myBall;
+    private int colorBallText = 0;
 
     Random rand = new Random();
     private ArrayList<Ball> ballsDisplayed;
@@ -47,11 +50,12 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
     private static final int Ball_Explode_ID = 1;
     private SoundPool soundPool;
     private SparseIntArray soundMap;
+    private String scoreString = "";
+   // private TextView scoreView;
 
     // paint variables
     private Paint textPaint;
     private Paint backgroundPaint;
-
 
 
     // public constructor
@@ -69,20 +73,23 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
 
         textPaint = new Paint();
         backgroundPaint = new Paint();
-        backgroundPaint.setColor(Color.LTGRAY);
+        backgroundPaint.setColor(Color.DKGRAY);
         ballsDisplayed= new ArrayList<Ball>();
+
+       // scoreView = (TextView) mainActivity.findViewById(R.id.scorebox);
+
 
     }
 
     //select a random color to the ball
     private int randomColor(){
         Random rColor = new Random();
-        int colNum = rColor.nextInt(4);
-        if (colNum == 0){
+        int colNum = rColor.nextInt(10);
+        if (colNum == 0 || colNum == 1 || colNum == 2 || colNum == 3){
             return Color.YELLOW;
-        } else if(colNum == 1){
+        } else if(colNum == 4 || colNum ==5 || colNum == 6){
             return Color.GREEN;
-        } else if(colNum == 2){
+        } else if(colNum == 7 || colNum == 8){
             return Color.BLUE;
         } else {
             return Color.RED;
@@ -98,7 +105,7 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
         screenWidth = w;
         screenHeight = h;
 
-        textPaint.setTextSize(w / 40);
+        textPaint.setTextSize(w / 10);
         textPaint.setAntiAlias(true);
 
         startNewGame();
@@ -107,8 +114,10 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
     // resets all the screen elements and start a new game
     public void startNewGame()
     {
+        colorBallText = randomColor();
         myBall = new Ball();
-
+        myBall.paint.setColor(colorBallText);
+        textPaint.setColor(colorBallText);
         myBall.x = myBall.radius + rand.nextInt(screenWidth - 2*myBall.radius);
         myBall.y = - myBall.radius;
         ballsDisplayed.clear();
@@ -116,6 +125,7 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
         speed = 30;
 
         score = 0;
+        scoreString = ""+ score;
 
 
         if (isGameOver)
@@ -138,8 +148,7 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
 
 
     public void drawBalls(Canvas canvas){
-        myBall.paint = new Paint();
-        myBall.paint.setColor(randomColor());
+
         if (canvas !=null){
 //            if (speed > 55){
 //                backgroundPaint.setColor(Color.BLACK);
@@ -157,6 +166,8 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
 //                backgroundPaint.setColor(Color.WHITE);
 //            }
             canvas.drawRect(0,0, canvas.getWidth(), canvas.getHeight(),backgroundPaint);
+
+            canvas.drawText(scoreString, 30, 50, textPaint);
 
             canvas.drawCircle((float)myBall.x,(float)myBall.y,myBall.radius, myBall.paint);
 
@@ -181,8 +192,10 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
                     startNewGame();
                 } else {
                     ballsDisplayed.add(myBall);
+                    colorBallText = randomColor();
                     myBall = new Ball();
-                    myBall.x = 50;
+                    myBall.paint.setColor(colorBallText);
+                    textPaint.setColor(colorBallText);
                     myBall.x = myBall.radius + rand.nextInt(screenWidth - 2 * myBall.radius);
                     myBall.y = -myBall.radius;
 
@@ -206,10 +219,15 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
     public void explodeBall (int touchX, int touchY) {
         if (myBall.contains(touchX, touchY)) {
             score = score + myBall.colorPoints();
+            scoreString = ""+ score;
+            //scoreView.setText(scoreString);
             if (score >highestScore){
                 highestScore = score;
             }
             myBall = new Ball();
+            colorBallText = randomColor();
+            myBall.paint.setColor(colorBallText);
+            textPaint.setColor(colorBallText);
             myBall.x = myBall.radius + rand.nextInt(screenWidth - 2 * myBall.radius);
             myBall.y = -myBall.radius;
             myBall.isExploded = true;

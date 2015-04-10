@@ -18,14 +18,13 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_settings=0x7f0a0009;
+        public static final int action_settings=0x7f0a0008;
         public static final int fallingballs=0x7f0a0000;
-        public static final int gameStarterFragment=0x7f0a0007;
+        public static final int gameStarterFragment=0x7f0a0006;
         public static final int gridLayout=0x7f0a0004;
         public static final int highestScoreB=0x7f0a0002;
-        public static final int mainGameView=0x7f0a0008;
+        public static final int mainGameView=0x7f0a0007;
         public static final int newGameB=0x7f0a0001;
-        public static final int scorebox=0x7f0a0006;
         public static final int textView=0x7f0a0005;
         public static final int textView2=0x7f0a0003;
     }
@@ -43,6 +42,9 @@ public final class R {
         public static final int bgpic=0x7f030000;
         public static final int colorpoints=0x7f030001;
         public static final int rainbg=0x7f030002;
+        public static final int redking=0x7f030003;
+        public static final int redkingbag=0x7f030004;
+        public static final int small=0x7f030005;
     }
     public static final class raw {
         public static final int blocker_hit=0x7f050000;

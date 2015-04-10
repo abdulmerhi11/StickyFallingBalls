@@ -88,7 +88,7 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
 
     }
 
-    //select a random color to the ball
+    //select a random color to the ball: The less points, the less the color appears
     private int randomColor(){
         Random rColor = new Random();
         int colNum = rColor.nextInt(10);
@@ -130,7 +130,7 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
         ballsDisplayed.clear();
         ballsExploded.clear();
 
-        speed = 30;
+        speed = 6;
 
         score = 0;
         scoreString = ""+ score;
@@ -226,11 +226,13 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
             if (myBall.isExploded){
                 myBall.isFalling = true;
                 myBall.isExploded = false;
+
             } else {
                 if (myBall.hitsFloor(screenHeight)) { myBall.y = screenHeight - myBall.radius; }
 
                 myBall.isFalling = false;
                 if (checkGameOver()){
+                    stopGame();
                     showGameOverDialog();
                 } else {
                     ballsDisplayed.add(myBall);
@@ -240,7 +242,7 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
                     myBall.x = myBall.radius + rand.nextInt(screenWidth - 2 * myBall.radius);
                     myBall.y = -myBall.radius;
 
-                    speed = 2 * (10 + rand.nextInt(20));
+                    speed = 2 * (4 + rand.nextInt(5));
 
 
                 }
@@ -260,6 +262,7 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
     // checks if the ball is hit
     public void explodeBall (int touchX, int touchY) {
         if (myBall.contains(touchX, touchY)) {
+            speed = 2 * (4 + rand.nextInt(5));
             ballsExploded.add(myBall);
             score = score + myBall.colorPoints();
             colorBallText = randomColor();
@@ -296,11 +299,11 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void surfaceCreated(SurfaceHolder holder)
     {
-        if (!dialogIsDisplayed){
-            gameThread = new GameThread(holder);
-            gameThread.setRunning(true);
-            gameThread.start();
-        }
+//        if (!dialogIsDisplayed){
+//            gameThread = new GameThread(holder);
+//            gameThread.setRunning(true);
+//            gameThread.start();
+//        }
     }
 
     @Override
@@ -358,6 +361,7 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback
         // initializes the surface holder
         public GameThread(SurfaceHolder holder)
         {
+
             surfaceHolder = holder;
             setName("GameThread");
         }

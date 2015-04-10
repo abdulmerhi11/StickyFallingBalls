@@ -1,20 +1,16 @@
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="edu.augustana.csc490.gamestarter.HighestScore"
-    android:rowCount="6">
+    tools:context="edu.augustana.csc490.gamestarter.HighestScore">
 
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="
-        One ball at a time is falling with a random speed and a random color. Your job is not to let this ball hit the floor or hit another ball that you already missed. As you click on more balls, your score goes up depending on the color of the ball.
-
-        For each color that a ball might have, a number of points are assigned according to the following:"
+        android:text="\n\tOne ball at a time is falling with a random speed and a random color. Your job is not to let this ball hit the floor or hit another ball that you already missed. As you click on more balls, your score goes up depending on the color of the ball.\n\n\n\n\n\tFor each color that a ball might have, a number of points are assigned according to the following:\n\nYELLOW: 10\nGREEN:  20\nBLUE:   30\nRED:    40\n\n\n\n\n\nENJOY"
         android:id="@+id/textView2"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
@@ -23,11 +19,4 @@
         android:layout_row="0"
         android:layout_column="0" />
 
-    <FrameLayout
-        android:layout_width="fill_parent"
-        android:layout_height="286dp"
-        android:layout_row="5"
-        android:layout_column="0"
-        android:background="@mipmap/colorpoints"></FrameLayout>
-
-</GridLayout>
+</RelativeLayout>
